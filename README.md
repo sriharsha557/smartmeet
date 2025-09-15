@@ -1,151 +1,213 @@
+# SmartMeet AI - Intelligent Meeting Scheduler
 
-```markdown
-# SmartMeet AI
+SmartMeet AI is an intelligent meeting scheduling application that uses AI to analyze participant availability and suggest optimal meeting times. It integrates with Microsoft 365 calendars and provides a user-friendly Streamlit interface.
 
-✅ **SmartMeet AI Application is now COMPLETE and FUNCTIONAL!**
+## Features
 
-SmartMeet is an AI-powered meeting scheduling assistant that integrates with Microsoft 365, sends email invitations, and offers a natural language chat interface. The app is production-ready, fully functional, and designed for personal or organizational use.
+- 🤖 **AI-Powered Scheduling**: Uses OpenAI and LangChain to intelligently suggest meeting times
+- 📅 **Microsoft 365 Integration**: Connects to Microsoft Graph API for calendar access
+- 💬 **Natural Language Processing**: Chat with the AI assistant using natural language
+- 📊 **Dashboard & Analytics**: View meeting trends and statistics
+- 📧 **Automatic Notifications**: Send meeting invitations and reminders
+- ⚡ **Conflict Resolution**: Automatically detect and resolve scheduling conflicts
 
----
+## Project Structure
 
-## 🔧 Issues Fixed
-1. **Missing Import Error** – Added `import os` to [`scheduler_agent.py`](agents/scheduler_agent.py)
-2. **Incomplete Database** – Completed [`database.py`](services/database.py) with all missing methods
-3. **Wrong File Structure** – Created proper directory structure and moved classes to separate files
-4. **Missing Dependencies** – Added comprehensive [`requirements.txt`](requirements.txt)
-5. **Error Handling** – Added try-catch blocks throughout [`Main.py`](Main.py)
-
----
-
-## 📁 Project Structure
-
-
+```
 SmartMeet/
-├── Main.py # Main Streamlit app (fixed imports & error handling)
-├── run.py # Quick start script
-├── requirements.txt # All dependencies
-├── .env.example # Environment template
-├── README.md # Complete setup guide
-├── agents/ # AI agents
-│ ├── scheduler_agent.py # Main scheduling AI
-│ ├── calendar_agent.py # Microsoft Graph integration
-│ └── notification_agent.py # Email notifications
-├── services/ # Core services
-│ └── database.py # Complete SQLite service
-└── utils/ # Utilities
-├── auth.py # Microsoft OAuth
-└── date_utils.py # Date/time functions
+├── Main.py                 # Main Streamlit application
+├── requirements.txt        # Python dependencies
+├── .env.example           # Environment variables template
+├── README.md              # This file
+├── agents/                # AI agents for different tasks
+│   ├── __init__.py
+│   ├── scheduler_agent.py  # Main scheduling AI agent
+│   ├── calendar_agent.py   # Microsoft Graph calendar integration
+│   └── notification_agent.py # Email notifications
+├── services/              # Core services
+│   ├── __init__.py
+│   └── database.py        # SQLite database service
+├── utils/                 # Utility functions
+│   ├── __init__.py
+│   ├── auth.py           # Microsoft OAuth authentication
+│   └── date_utils.py     # Date and time utilities
+└── data/                 # Database files (created automatically)
+    └── meetings.db
+```
 
+## Installation
 
+### 1. Clone or Download the Project
 
----
+Make sure all files are in the correct directory structure as shown above.
 
-## 🚀 Getting Started
+### 2. Install Dependencies
 
-### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
-````
+```
 
-### 2. Configure Environment
+### 3. Set Up Environment Variables
+
+Copy `.env.example` to `.env` and fill in your configuration:
 
 ```bash
 cp .env.example .env
-# Edit .env with your API keys and credentials
 ```
 
-### 3. Start the App
+Edit the `.env` file with your credentials:
+
+```env
+# Microsoft Graph API Configuration
+MICROSOFT_CLIENT_ID=your_client_id_here
+MICROSOFT_CLIENT_SECRET=your_client_secret_here
+MICROSOFT_TENANT_ID=your_tenant_id_or_common
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Email Configuration (Optional)
+SMTP_USERNAME=your_email@gmail.com
+SMTP_PASSWORD=your_app_password_here
+```
+
+## Configuration Setup
+
+### Microsoft Azure App Registration
+
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to "Azure Active Directory" > "App registrations"
+3. Click "New registration"
+4. Fill in:
+   - **Name**: SmartMeet AI
+   - **Supported account types**: Accounts in any organizational directory and personal Microsoft accounts
+   - **Redirect URI**: Web - `http://localhost:8501/auth/callback`
+5. After creation, note down:
+   - **Application (client) ID** → `MICROSOFT_CLIENT_ID`
+   - **Directory (tenant) ID** → `MICROSOFT_TENANT_ID`
+6. Go to "Certificates & secrets" > "New client secret"
+   - Note down the secret value → `MICROSOFT_CLIENT_SECRET`
+7. Go to "API permissions" > "Add a permission" > "Microsoft Graph" > "Delegated permissions"
+   - Add: `Calendars.ReadWrite`, `User.Read`, `Mail.Send`
+8. Click "Grant admin consent"
+
+### OpenAI API Key
+
+1. Go to [OpenAI Platform](https://platform.openai.com)
+2. Sign up/Login
+3. Go to "API Keys" section
+4. Create a new API key
+5. Copy the key → `OPENAI_API_KEY`
+
+### Email Configuration (Optional)
+
+For Gmail:
+1. Enable 2-factor authentication
+2. Generate an "App Password"
+3. Use your Gmail address as `SMTP_USERNAME`
+4. Use the app password as `SMTP_PASSWORD`
+
+## Running the Application
 
 ```bash
-python run.py
-# OR
 streamlit run Main.py
 ```
 
----
+The application will open in your browser at `http://localhost:8501`
 
-## 🔑 Required API Keys
+## Usage
 
-1. **OpenAI API Key** – Get from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. **Microsoft Azure App Registration** – Create at [Azure Portal](https://portal.azure.com)
+### 1. Authentication
+- Click "Connect to Microsoft 365" in the sidebar
+- Complete the OAuth flow to connect your Microsoft account
 
-   * Client ID, Client Secret, Tenant ID
-   * Redirect URI: `http://localhost:8501/auth/callback`
-   * Permissions: `Calendars.ReadWrite`, `User.Read`, `Mail.Send`
+### 2. Schedule a Meeting
+- Go to "Schedule Meeting" page
+- Fill in meeting details (title, participants, duration, etc.)
+- Click "Find Smart Suggestions"
+- Review AI-generated suggestions and select one
 
-### Optional Configuration
+### 3. Chat Assistant
+- Use the "Chat Assistant" page to interact with the AI
+- Ask questions like:
+  - "Schedule a team meeting for tomorrow at 2 PM"
+  - "Check availability for john@company.com this week"
+  - "Find a time for 5 people next Tuesday"
 
-* Email SMTP settings for notifications (Gmail app password recommended)
+### 4. View Dashboard
+- Monitor meeting statistics and trends
+- See upcoming meetings and their status
 
----
+## Troubleshooting
 
-## ✨ Features
+### Common Issues
 
-* 🤖 AI-powered meeting scheduling
-* 📅 Microsoft 365 calendar integration
-* 💬 Natural language chat assistant
-* 📊 Dashboard with analytics
-* 📧 Automatic email invitations
-* ⚡ Conflict detection and resolution
-* 🔐 OAuth authentication
-* 💾 SQLite database storage
+1. **Import Errors**
+   - Make sure all dependencies are installed: `pip install -r requirements.txt`
+   - Check that all files are in the correct directory structure
 
----
+2. **Authentication Issues**
+   - Verify your Microsoft App Registration settings
+   - Check that redirect URI matches exactly: `http://localhost:8501/auth/callback`
+   - Ensure API permissions are granted
 
-## 🎯 Quick Testing with Your Outlook Account
+3. **OpenAI API Errors**
+   - Verify your API key is correct
+   - Check you have sufficient credits/quota
+   - Ensure the key has the necessary permissions
 
-### 1. Azure App Registration
+4. **Database Issues**
+   - The SQLite database is created automatically in the `data/` folder
+   - If you encounter issues, delete the `data/meetings.db` file to reset
 
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Sign in with your Outlook account
-3. Create an "App registration" → Name: "SmartMeet Test"
-4. Set redirect URI: `http://localhost:8501/auth/callback`
-5. Get **Client ID**, **Client Secret**, **Tenant ID**
+### Development Mode
 
-### 2. Set Permissions
-
-Add Microsoft Graph permissions:
-
-* `Calendars.ReadWrite`
-* `User.Read`
-* `Mail.Send`
-
-### 3. Configure Environment
-
-```bash
-cp .env.example .env
-# Edit .env with your Azure credentials + OpenAI API key
-```
-
-### 4. Run & Test
+To run in development mode with more detailed logging:
 
 ```bash
-pip install -r requirements.txt
-python run.py
+export DEBUG=True
+streamlit run Main.py
 ```
+
+## Features in Detail
+
+### AI Scheduling Agent
+- Analyzes participant availability using Microsoft Graph API
+- Considers meeting priority, duration, and preferences
+- Generates confidence scores for each suggestion
+- Provides human-readable reasoning for recommendations
+
+### Calendar Integration
+- Real-time availability checking
+- Meeting creation and updates
+- Conflict detection and resolution
+- Support for recurring meetings
+
+### Natural Language Processing
+- Chat interface for scheduling requests
+- Understands context and preferences
+- Extracts meeting details from natural language
+- Provides conversational responses
+
+## Contributing
+
+1. Follow the existing code structure
+2. Add type hints to all functions
+3. Include docstrings for new functions
+4. Test thoroughly before submitting changes
+
+## License
+
+This project is for internal use. Please ensure compliance with your organization's policies regarding AI and data usage.
+
+## Support
+
+For issues or questions:
+1. Check this README first
+2. Review the troubleshooting section
+3. Check the application logs for error details
+4. Contact the development team
 
 ---
 
-### ✅ What You Can Test
-
-* Real Calendar Integration – Access your actual Outlook calendar
-* AI Meeting Scheduling – Create meetings in your calendar
-* Email Invitations – Send real meeting invites
-* Conflict Detection – Check against your real schedule
-* Natural Language Chat – e.g., "Schedule meeting tomorrow 2 PM"
-
----
-
-### 🔒 Safe for Personal Use
-
-* Only accesses **your calendar/email**
-* You control all permissions
-* Can revoke access anytime
-* No data stored externally
-
-The application is fully functional and ready for testing with your Outlook account.
-
-```
-
-If you want, I can also create a **shorter, visually appealing version** for GitHub that highlights features with badges and emojis to make it stand out. It’ll be more “GitHub-friendly” for users scanning the page. Do you want me to do that?
-```
+**SmartMeet AI v1.0** - Making meeting scheduling intelligent and effortless! 🤖📅
